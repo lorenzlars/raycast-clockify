@@ -1,0 +1,8 @@
+# Claude
+.claude/**.local.*
+
+# Environment
+.env
+
+# Dependencies
+node_modules/
