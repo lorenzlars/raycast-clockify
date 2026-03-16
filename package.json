@@ -1,16 +1,60 @@
 {
-  "name": "test",
-  "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "clockify-overtime",
+  "title": "Clockify Overtime",
+  "description": "Calculate overtime from Clockify time entries",
+  "icon": "extension-icon.png",
+  "author": "lars",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "overtime",
+      "title": "Show Overtime",
+      "subtitle": "Clockify",
+      "description": "Show overtime report from Clockify time entries",
+      "mode": "view"
+    },
+    {
+      "name": "menu-bar",
+      "title": "Overtime Menu Bar",
+      "subtitle": "Clockify",
+      "description": "Show overtime in the macOS menu bar",
+      "mode": "menu-bar",
+      "interval": "30m"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "apiKey",
+      "title": "Clockify API Key",
+      "description": "Your Clockify API key",
+      "type": "password",
+      "required": true
+    },
+    {
+      "name": "hoursPerDay",
+      "title": "Hours per Day",
+      "description": "Expected working hours per day",
+      "type": "textfield",
+      "default": "8",
+      "required": false
+    }
+  ],
   "dependencies": {
-    "dotenv": "^16.4.7"
+    "@raycast/api": "^1.100.0",
+    "@raycast/utils": "^1.19.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.11",
+    "@types/node": "~22.13.0",
+    "@types/react": "^19.0.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.4.0",
+    "typescript": "^5.7.0"
+  },
+  "scripts": {
+    "dev": "ray develop",
+    "build": "ray build -e dist",
+    "lint": "ray lint"
   }
 }
