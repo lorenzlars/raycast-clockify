@@ -1,7 +1,7 @@
 import { Action, ActionPanel, Detail, getPreferenceValues, Icon, Color } from "@raycast/api";
 import { usePromise } from "@raycast/utils";
 import { fetchUser, fetchAllTimeEntries } from "./api/clockify";
-import { calculateOvertime, formatDate, formatHours, formatHoursUnsigned } from "./lib/calculations";
+import { calculateReport, formatDate, formatHours, formatHoursUnsigned } from "./lib/calculations";
 
 interface Preferences {
   apiKey: string;
@@ -16,26 +16,27 @@ export default function Command() {
     const user = await fetchUser(apiKey);
     const entries = await fetchAllTimeEntries(apiKey, user.activeWorkspace, user.id);
     if (entries.length === 0) return null;
-    return calculateOvertime(entries, hours);
+    return calculateReport(entries, hours);
   });
 
   const markdown = data
-    ? `# Clockify Overtime Report
+    ? `# Clockify Hours Report
 
 | | |
 |---|---|
-| **Zeitraum** | ${formatDate(data.periodStart)} – ${formatDate(data.periodEnd)} |
-| **Arbeitstage** | ${data.workdays} |
-| **Sollstunden** | ${formatHoursUnsigned(data.expectedHours)} |
-| **Ist-Stunden** | ${formatHoursUnsigned(data.actualHours)} |
-| **Overtime** | **${formatHours(data.overtimeHours)}** |
+| **Today** | ${formatHoursUnsigned(data.todayHours)} |
+| **Period** | ${formatDate(data.periodStart)} – ${formatDate(data.periodEnd)} |
+| **Workdays** | ${data.workdays} |
+| **Expected** | ${formatHoursUnsigned(data.expectedHours)} |
+| **Actual** | ${formatHoursUnsigned(data.actualHours)} |
+| **Balance** | **${formatHours(data.balanceHours)}** |
 `
     : isLoading
       ? "Loading..."
       : "No time entries found.";
 
-  const overtimeColor = data && data.overtimeHours >= 0 ? Color.Green : Color.Red;
-  const overtimeIcon = data && data.overtimeHours >= 0 ? Icon.ArrowUp : Icon.ArrowDown;
+  const balanceColor = data && data.balanceHours >= 0 ? Color.Green : Color.Red;
+  const balanceIcon = data && data.balanceHours >= 0 ? Icon.ArrowUp : Icon.ArrowDown;
 
   return (
     <Detail
@@ -44,20 +45,22 @@ export default function Command() {
       metadata={
         data ? (
           <Detail.Metadata>
+            <Detail.Metadata.Label title="Today" text={formatHoursUnsigned(data.todayHours)} />
+            <Detail.Metadata.Separator />
             <Detail.Metadata.Label
-              title="Zeitraum"
+              title="Period"
               text={`${formatDate(data.periodStart)} – ${formatDate(data.periodEnd)}`}
             />
-            <Detail.Metadata.Label title="Arbeitstage" text={String(data.workdays)} />
+            <Detail.Metadata.Label title="Workdays" text={String(data.workdays)} />
             <Detail.Metadata.Separator />
-            <Detail.Metadata.Label title="Sollstunden" text={formatHoursUnsigned(data.expectedHours)} />
-            <Detail.Metadata.Label title="Ist-Stunden" text={formatHoursUnsigned(data.actualHours)} />
+            <Detail.Metadata.Label title="Expected" text={formatHoursUnsigned(data.expectedHours)} />
+            <Detail.Metadata.Label title="Actual" text={formatHoursUnsigned(data.actualHours)} />
             <Detail.Metadata.Separator />
-            <Detail.Metadata.TagList title="Overtime">
+            <Detail.Metadata.TagList title="Balance">
               <Detail.Metadata.TagList.Item
-                text={formatHours(data.overtimeHours)}
-                color={overtimeColor}
-                icon={overtimeIcon}
+                text={formatHours(data.balanceHours)}
+                color={balanceColor}
+                icon={balanceIcon}
               />
             </Detail.Metadata.TagList>
           </Detail.Metadata>
@@ -68,7 +71,7 @@ export default function Command() {
           <ActionPanel>
             <Action.CopyToClipboard
               title="Copy Report"
-              content={`Overtime: ${formatHours(data.overtimeHours)} (${formatDate(data.periodStart)} – ${formatDate(data.periodEnd)})`}
+              content={`Balance: ${formatHours(data.balanceHours)} | Today: ${formatHoursUnsigned(data.todayHours)} (${formatDate(data.periodStart)} – ${formatDate(data.periodEnd)})`}
             />
             <Action.OpenInBrowser title="Open Clockify" url="https://app.clockify.me" />
           </ActionPanel>

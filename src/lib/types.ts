@@ -10,11 +10,12 @@ export interface ClockifyTimeEntry {
   };
 }
 
-export interface OvertimeReport {
+export interface HoursReport {
   periodStart: Date;
   periodEnd: Date;
   workdays: number;
   expectedHours: number;
   actualHours: number;
-  overtimeHours: number;
+  balanceHours: number;
+  todayHours: number;
 }

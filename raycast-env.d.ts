@@ -18,16 +18,12 @@ type ExtensionPreferences = {
 declare type Preferences = ExtensionPreferences
 
 declare namespace Preferences {
-  /** Preferences accessible in the `overtime` command */
-  export type Overtime = ExtensionPreferences & {}
-  /** Preferences accessible in the `menu-bar` command */
-  export type MenuBar = ExtensionPreferences & {}
+  /** Preferences accessible in the `report` command */
+  export type Report = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
-  /** Arguments passed to the `overtime` command */
-  export type Overtime = {}
-  /** Arguments passed to the `menu-bar` command */
-  export type MenuBar = {}
+  /** Arguments passed to the `report` command */
+  export type Report = {}
 }
 

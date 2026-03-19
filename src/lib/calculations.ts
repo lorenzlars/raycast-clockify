@@ -1,4 +1,4 @@
-import { ClockifyTimeEntry, OvertimeReport } from "./types";
+import { ClockifyTimeEntry, HoursReport } from "./types";
 
 export function countWorkdays(start: Date, end: Date): number {
   let count = 0;
@@ -47,28 +47,36 @@ export function formatDate(date: Date): string {
   });
 }
 
-export function calculateOvertime(
+export function calculateReport(
   entries: ClockifyTimeEntry[],
   hoursPerDay: number,
-): OvertimeReport {
+): HoursReport {
   const now = new Date();
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
 
   let totalMs = 0;
+  let todayMs = 0;
   for (const entry of entries) {
     const start = new Date(entry.timeInterval.start);
     const end = entry.timeInterval.end
       ? new Date(entry.timeInterval.end)
       : now;
-    totalMs += end.getTime() - start.getTime();
+    const durationMs = end.getTime() - start.getTime();
+    totalMs += durationMs;
+    if (start >= todayStart) {
+      todayMs += durationMs;
+    }
   }
   const actualHours = totalMs / (1000 * 60 * 60);
+  const todayHours = todayMs / (1000 * 60 * 60);
 
   const starts = entries.map((e) => new Date(e.timeInterval.start));
   const earliest = new Date(Math.min(...starts.map((d) => d.getTime())));
 
   const workdays = countWorkdays(earliest, now);
   const expectedHours = workdays * hoursPerDay;
-  const overtimeHours = actualHours - expectedHours;
+  const balanceHours = actualHours - expectedHours;
 
   return {
     periodStart: earliest,
@@ -76,6 +84,7 @@ export function calculateOvertime(
     workdays,
     expectedHours,
     actualHours,
-    overtimeHours,
+    balanceHours,
+    todayHours,
   };
 }
