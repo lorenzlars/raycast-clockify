@@ -20,16 +20,12 @@ export default function Command() {
   });
 
   const markdown = data
-    ? `# Clockify Hours Report
-
-| | |
+    ? `| | |
 |---|---|
-| **Today** | ${formatHoursUnsigned(data.todayHours)} |
 | **Period** | ${formatDate(data.periodStart)} – ${formatDate(data.periodEnd)} |
 | **Workdays** | ${data.workdays} |
 | **Expected** | ${formatHoursUnsigned(data.expectedHours)} |
 | **Actual** | ${formatHoursUnsigned(data.actualHours)} |
-| **Balance** | **${formatHours(data.balanceHours)}** |
 `
     : isLoading
       ? "Loading..."
@@ -46,15 +42,6 @@ export default function Command() {
         data ? (
           <Detail.Metadata>
             <Detail.Metadata.Label title="Today" text={formatHoursUnsigned(data.todayHours)} />
-            <Detail.Metadata.Separator />
-            <Detail.Metadata.Label
-              title="Period"
-              text={`${formatDate(data.periodStart)} – ${formatDate(data.periodEnd)}`}
-            />
-            <Detail.Metadata.Label title="Workdays" text={String(data.workdays)} />
-            <Detail.Metadata.Separator />
-            <Detail.Metadata.Label title="Expected" text={formatHoursUnsigned(data.expectedHours)} />
-            <Detail.Metadata.Label title="Actual" text={formatHoursUnsigned(data.actualHours)} />
             <Detail.Metadata.Separator />
             <Detail.Metadata.TagList title="Balance">
               <Detail.Metadata.TagList.Item
