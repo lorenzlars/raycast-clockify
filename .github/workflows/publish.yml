@@ -1,0 +1,31 @@
+name: Publish to Raycast Store
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    name: Publish Extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to raycast/extensions
+        uses: timrogers/publish-raycast-extension@v1.0.1
+        with:
+          extensions_fork: ${{ vars.EXTENSIONS_FORK }}
+          github_username: ${{ vars.GITHUB_USERNAME }}
+          extension_name: clockify
+          github_access_token: ${{ secrets.GH_ACCESS_TOKEN }}
