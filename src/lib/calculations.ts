@@ -59,9 +59,7 @@ export function calculateReport(
   let todayMs = 0;
   for (const entry of entries) {
     const start = new Date(entry.timeInterval.start);
-    const end = entry.timeInterval.end
-      ? new Date(entry.timeInterval.end)
-      : now;
+    const end = entry.timeInterval.end ? new Date(entry.timeInterval.end) : now;
     const durationMs = end.getTime() - start.getTime();
     totalMs += durationMs;
     if (start >= todayStart) {

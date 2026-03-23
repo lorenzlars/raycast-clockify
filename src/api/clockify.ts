@@ -25,6 +25,7 @@ export async function fetchAllTimeEntries(
   const pageSize = 50;
   let page = 1;
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const batch = await apiFetch<ClockifyTimeEntry[]>(
       `/workspaces/${workspaceId}/user/${userId}/time-entries?page-size=${pageSize}&page=${page}`,
