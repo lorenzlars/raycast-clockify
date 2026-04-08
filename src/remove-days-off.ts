@@ -1,4 +1,4 @@
-import { LaunchProps, showHUD } from "@raycast/api";
+import { launchCommand, LaunchProps, LaunchType } from "@raycast/api";
 import { getExtraDaysOff, setExtraDaysOff } from "./lib/extraDaysOff";
 
 export default async function Command(props: LaunchProps<{ arguments: { amount: string } }>) {
@@ -6,5 +6,5 @@ export default async function Command(props: LaunchProps<{ arguments: { amount: 
   const current = await getExtraDaysOff();
   const updated = Math.max(0, current - amount);
   await setExtraDaysOff(updated);
-  await showHUD(`Extra Days Off: ${updated}`);
+  await launchCommand({ name: "report", type: LaunchType.UserInitiated });
 }
