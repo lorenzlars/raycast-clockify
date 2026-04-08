@@ -22,7 +22,7 @@ export async function fetchAllTimeEntries(
   userId: string,
 ): Promise<ClockifyTimeEntry[]> {
   const entries: ClockifyTimeEntry[] = [];
-  const pageSize = 50;
+  const pageSize = 5000;
   let page = 1;
 
   // eslint-disable-next-line no-constant-condition

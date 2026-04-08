@@ -1,6 +1,19 @@
 import { ClockifyTimeEntry, HoursReport } from "./types";
+import { FederalState, getHolidaysInRange } from "./holidays";
 
-export function countWorkdays(start: Date, end: Date): number {
+export function countWorkdays(
+  start: Date,
+  end: Date,
+  holidays?: Date[],
+): number {
+  const holidaySet = new Set(
+    (holidays ?? []).map((d) => {
+      const h = new Date(d);
+      h.setHours(0, 0, 0, 0);
+      return h.getTime();
+    }),
+  );
+
   let count = 0;
   const current = new Date(start);
   current.setHours(0, 0, 0, 0);
@@ -9,7 +22,7 @@ export function countWorkdays(start: Date, end: Date): number {
 
   while (current <= endDate) {
     const day = current.getDay();
-    if (day !== 0 && day !== 6) count++;
+    if (day !== 0 && day !== 6 && !holidaySet.has(current.getTime())) count++;
     current.setDate(current.getDate() + 1);
   }
 
@@ -50,6 +63,8 @@ export function formatDate(date: Date): string {
 export function calculateReport(
   entries: ClockifyTimeEntry[],
   hoursPerDay: number,
+  state?: FederalState,
+  extraDaysOff = 0,
 ): HoursReport {
   const now = new Date();
   const todayStart = new Date(now);
@@ -72,7 +87,13 @@ export function calculateReport(
   const starts = entries.map((e) => new Date(e.timeInterval.start));
   const earliest = new Date(Math.min(...starts.map((d) => d.getTime())));
 
-  const workdays = countWorkdays(earliest, now);
+  const holidaysInRange = state
+    ? getHolidaysInRange(earliest, now, state).filter((h) => {
+        const day = h.getDay();
+        return day !== 0 && day !== 6;
+      })
+    : [];
+  const workdays = countWorkdays(earliest, now, holidaysInRange) - extraDaysOff;
   const expectedHours = workdays * hoursPerDay;
   const balanceHours = actualHours - expectedHours;
 
@@ -80,6 +101,8 @@ export function calculateReport(
     periodStart: earliest,
     periodEnd: now,
     workdays,
+    holidays: holidaysInRange.length,
+    extraDaysOff,
     expectedHours,
     actualHours,
     balanceHours,

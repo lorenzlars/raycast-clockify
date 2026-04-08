@@ -14,6 +14,8 @@ export interface HoursReport {
   periodStart: Date;
   periodEnd: Date;
   workdays: number;
+  holidays: number;
+  extraDaysOff: number;
   expectedHours: number;
   actualHours: number;
   balanceHours: number;

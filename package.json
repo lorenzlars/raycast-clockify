@@ -12,6 +12,40 @@
       "title": "Report",
       "description": "Hours report with daily summary and balance",
       "mode": "view"
+    },
+    {
+      "name": "add-days-off",
+      "title": "Add Days Off",
+      "description": "Add days off to the counter",
+      "mode": "no-view",
+      "arguments": [
+        {
+          "name": "amount",
+          "placeholder": "Days",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "remove-days-off",
+      "title": "Remove Days Off",
+      "description": "Remove days off from the counter",
+      "mode": "no-view",
+      "arguments": [
+        {
+          "name": "amount",
+          "placeholder": "Days",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "reset-days-off",
+      "title": "Reset Days Off",
+      "description": "Reset days off counter to zero",
+      "mode": "no-view"
     }
   ],
   "preferences": [
@@ -29,6 +63,32 @@
       "type": "textfield",
       "default": "8",
       "required": false
+    },
+    {
+      "name": "federalState",
+      "title": "Bundesland",
+      "description": "Bundesland für Feiertagsberechnung",
+      "type": "dropdown",
+      "required": false,
+      "data": [
+        { "title": "Keine Feiertage", "value": "" },
+        { "title": "Baden-Württemberg", "value": "BW" },
+        { "title": "Bayern", "value": "BY" },
+        { "title": "Berlin", "value": "BE" },
+        { "title": "Brandenburg", "value": "BB" },
+        { "title": "Bremen", "value": "HB" },
+        { "title": "Hamburg", "value": "HH" },
+        { "title": "Hessen", "value": "HE" },
+        { "title": "Mecklenburg-Vorpommern", "value": "MV" },
+        { "title": "Niedersachsen", "value": "NI" },
+        { "title": "Nordrhein-Westfalen", "value": "NW" },
+        { "title": "Rheinland-Pfalz", "value": "RP" },
+        { "title": "Saarland", "value": "SL" },
+        { "title": "Sachsen", "value": "SN" },
+        { "title": "Sachsen-Anhalt", "value": "ST" },
+        { "title": "Schleswig-Holstein", "value": "SH" },
+        { "title": "Thüringen", "value": "TH" }
+      ]
     }
   ],
   "dependencies": {

@@ -14,32 +14,42 @@ import {
   formatHours,
   formatHoursUnsigned,
 } from "./lib/calculations";
+import { FederalState } from "./lib/holidays";
+import { getExtraDaysOff } from "./lib/extraDaysOff";
 
 interface Preferences {
   apiKey: string;
   hoursPerDay: string;
+  federalState: string;
 }
 
 export default function Command() {
-  const { apiKey, hoursPerDay } = getPreferenceValues<Preferences>();
+  const { apiKey, hoursPerDay, federalState } =
+    getPreferenceValues<Preferences>();
   const hours = parseFloat(hoursPerDay) || 8;
+  const state = federalState
+    ? (federalState as FederalState)
+    : undefined;
 
   const { data, isLoading } = usePromise(async () => {
     const user = await fetchUser(apiKey);
+    const extra = await getExtraDaysOff();
     const entries = await fetchAllTimeEntries(
       apiKey,
       user.activeWorkspace,
       user.id,
     );
     if (entries.length === 0) return null;
-    return calculateReport(entries, hours);
+    return calculateReport(entries, hours, state, extra);
   });
 
   const markdown = data
-    ? `| | |
+    ? `| Name | Value |
 |---|---|
 | **Period** | ${formatDate(data.periodStart)} – ${formatDate(data.periodEnd)} |
 | **Workdays** | ${data.workdays} |
+| **Holidays** | ${data.holidays} |
+| **Days Off** | ${data.extraDaysOff} |
 | **Expected** | ${formatHoursUnsigned(data.expectedHours)} |
 | **Actual** | ${formatHoursUnsigned(data.actualHours)} |
 `
